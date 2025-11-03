@@ -13,7 +13,7 @@ export async function connectToDatabase(){
         try {
             client = new MongoClient(uri);
             await client.connect();
-            db = client.db("sample_airbnb");
+            db = client.db("checklist_system");
             console.log("✅ Conexión a MongoDB establecida");
         } catch (error) {
             console.error("❌  Error conectando a MongoDB", error.message);

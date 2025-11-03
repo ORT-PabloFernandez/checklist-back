@@ -1,57 +1,57 @@
-# TALLER DE PROGRAMACION 2
+# API SISTEMA DE CHECKLISTS
 
-## Instrucciones de resolución de examen
+## Descripción
 
-Es tu primer día en [tecnoshare.com](http://tecnoshare.com) luego de un intenso entrenamiento de 10 semanas por fin tenes la oportunidad de mostrar lo que aprendiste, y tu potencial como desarrollador backend en nodejs con express y mongodb.
+API REST desarrollada con Node.js, Express y MongoDB para la gestión de checklists operativos. Este sistema permite crear templates de checklists, asignarlos a colaboradores y realizar el seguimiento de su ejecución.
 
-Luego de abrir el correo encuentras un mail de tu Líder Técnico con tu primera asignación!! 💪
+## Características principales
 
-> Bienvenid@! estuvimos esperando por horas que llegares, tenemos varias tareas criticas y prioritarias en nuestro backlog. Por favor presta mucha atención a las instrucciones. No dudes en preguntarme cualquier cosa, aunque generalmente estoy muy ocupado resolviendo problemas heredados de las rotaciones de los desarrolladores.
+- 🔐 **Autenticación JWT** - Todos los endpoints están protegidos
+- 📋 **Gestión de Checklists** - Crear y administrar templates de checklists
+- 👥 **Sistema de Asignaciones** - Asignar checklists a colaboradores específicos
+- ⚡ **Ejecución en Tiempo Real** - Seguimiento del progreso de ejecución
+- 🏗️ **Arquitectura en Capas** - Separación clara entre rutas, controladores y servicios de datos
 
-> En el presente repositorío encontrarás un proyecto de nodejs que ya tiene codigo base del backend con el que vamos a trabajar. Te aconsejo que sigas los siguientes pasos para armar tu entorno de trabajo.
+## Instalación y configuración
 
-> 1. Realizar un Fork del presente repositorio
-> 2. Realizar un clone del presente repositorio
-> 3. Instalar las dependencias
-> 4. Solicitar las variables de entorno que contiene la conexion string a mongodb (antes de preguntar, revisa el chat, seguro estan ahí)
-> 5. Ejecutar el servidor web de la api REST con el script de npm start-dev si queres trabajar con nodemon (tendrías que instalarlo) con start solo, tambien funciona.
->    El backend se conecta con una base de datos Mongodb en la cual se encuentra la base de datos **sample_airbnb** con una collection llamada **listingsAndReviews**, ahí se encuentran aprox. 5.600 publicaciones de propiedades.
-> 6. Proba el endpoint que ya se encuentra desarrollado: /api/listingsAndReviews debería retornar un json con 5.600 publicaciones. Sin embargo te aconsejo que uses el paginado que tiene para probar (mira la definición del end-point). Sí por algun motivo no llegase a funcionar, solicita asistencia.
+1. **Clonar el repositorio**
+```bash
+git clone <repository-url>
+cd checklist-back
+```
 
-> ### TUS TAREAS SON LAS SIGUIENTES POR ORDEN DE PRIORIDAD
->
-> 1. Desarrollar el endpoint para obtener propiedades por tipo de alojamiento
-Crear un endpoint que permita filtrar las propiedades por tipo de alojamiento (property_type) utilizando el formato /api/listings/property-type/:type. Este endpoint debe retornar todas las propiedades que coincidan con el tipo especificado (ej: "Apartment", "House", "Condominium").
-> 2. Desarrollar el endpoint para obtener todas las propiedades con precio total calculado
-Crear un endpoint /api/listings/with-total-price que retorne todas las propiedades con una nueva propiedad llamada **totalPrice** que sume el precio base (price) más las tarifas adicionales como cleaning_fee, security_deposit y extra_people si existen. Si alguna tarifa no está disponible, debe considerarse como 0.
-> 3. Desarrollar el endpoint para obtener propiedades por host específico
-Implementar un endpoint que permita obtener todas las propiedades de un host particular utilizando el formato /api/listings/host/:host_id. Debe retornar un listado completo de todas las propiedades que pertenecen al host especificado.
-> 4. Desarrollar el endpoint para actualizar la disponibilidad de una propiedad
-Crear un endpoint PUT/PATCH que permita actualizar el estado de disponibilidad de una propiedad específica. El endpoint debe permitir cambiar campos como availability.available_30, availability.available_60, availability.available_90 y availability.available_365.
-> 5. Desarrollar el endpoint para obtener un ranking de hosts con más propiedades
-Implementar un endpoint /api/listings/top-hosts?limit=10 que retorne un ranking de los hosts que tienen más propiedades listadas. Debe incluir información del host (nombre, id) y la cantidad total de propiedades que maneja, ordenado de mayor a menor. 
+2. **Instalar dependencias**
+```bash
+npm install
+```
 
-> Características importantes a considerar:
+3. **Configurar variables de entorno**
+Crear un archivo `.env` con:
+```env
+MONGODB_URI=mongodb://localhost:27017/checklist_system
+JWT_SECRET=tu_jwt_secret_aqui
+PORT=3000
+```
 
-    - Todos los endpoints deben estar protegidos con el middleware de autenticación existente
-    - Implementar paginación donde sea apropiado
-    - Manejar errores correctamente con códigos de estado HTTP apropiados
-    - Seguir las convenciones REST establecidas en el proyecto
-    - Incluir validación de parámetros de entrada
-    - Documentar los endpoints en el README.md con sus parámetros correspondientes
+4. **Ejecutar el servidor**
+```bash
+# Desarrollo con auto-reload
+npm run dev
 
-> Desde ya muchas gracias por la colaboración! 😉 como te comente en la entrevista soy muy detallista en la prolijidad del codigo y la performance cada detalle cuenta, no me gusta mucho las cosas fuera del estandar de APIREST, sin embargo si no estas seguro, es mejor que lo resuelvas como puedas y me dejes notas en el readme.md del repo, para que yo pueda probar.
+# Producción
+npm start
+```
 
-> Y una ultima cosa importante, todos los endpoints que desarrolles tienen que estar asegurados con un middleware de autenticacion, que valide que el token sea valido y que el usuario tenga permiso para acceder a la ruta.
+## Estructura del proyecto
 
-## Intrucciones para la entrega
-
-Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para la entrega:
-
-1. Completar el listado de endpoints, especificando parametros si los hubiera, mas abajo en este mismo archivo.
-2. Realizar un commit a tu repo con un mensaje con tu nombre completo
-3. Realizar un push a tu repositorio
-4. Realizar un pull request a mi repositorio
+```
+src/
+├── controllers/     # Lógica de negocio
+├── data/           # Servicios de acceso a datos
+├── middleware/     # Middleware de autenticación
+├── routes/         # Definición de rutas
+└── app.js         # Configuración principal
+```
 
 ## Listado de endpoints implementados
 
@@ -61,9 +61,108 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 - GET /api/users - Obtener todos los usuarios (requiere autenticación)
 - GET /api/users/:id - Obtener un usuario específico por ID (requiere autenticación)
 
-### Endpoints de listings/propiedades:
-- GET /api/listings?pageSize=[pageSize]&page=[page] - Obtener todas las propiedades con paginación opcional (requiere autenticación)
-- GET /api/listings/:id - Obtener una propiedad específica por ID (requiere autenticación)
+### Endpoints de checklists:
+- GET /api/checklists - Obtener todos los templates de checklists (requiere autenticación)
+- GET /api/checklists/:id - Obtener un checklist específico por ID (requiere autenticación)
+- POST /api/checklists - Crear un nuevo template de checklist (requiere autenticación)
+- PUT /api/checklists/:id - Actualizar un template de checklist (requiere autenticación)
+
+### Endpoints de asignaciones:
+- GET /api/assignments - Obtener todas las asignaciones con filtros opcionales (requiere autenticación)
+  - Query params: `?collaboratorEmail=email&status=pending`
+- GET /api/assignments/my - Obtener mis asignaciones (requiere autenticación)
+- GET /api/assignments/:id - Obtener una asignación específica por ID (requiere autenticación)
+- POST /api/assignments - Crear una nueva asignación (requiere autenticación)
+- PUT /api/assignments/:id - Actualizar una asignación (requiere autenticación)
+
+### Endpoints de ejecuciones:
+- GET /api/executions - Obtener todas las ejecuciones con filtros opcionales (requiere autenticación)
+  - Query params: `?assignmentId=id&collaboratorEmail=email`
+- GET /api/executions/:id - Obtener una ejecución específica por ID (requiere autenticación)
+- POST /api/executions - Iniciar una nueva ejecución (requiere autenticación)
+- PUT /api/executions/:id - Actualizar una ejecución en progreso (requiere autenticación)
+- POST /api/executions/:id/complete - Completar una ejecución (requiere autenticación)
 
 ### Endpoint base:
-- GET / - Mensaje de bienvenida de la API
+- GET / - Información de la API y endpoints disponibles
+
+## Modelos de datos
+
+### Checklist Template
+```json
+{
+  "_id": "ObjectId",
+  "title": "string",
+  "description": "string",
+  "items": [
+    {
+      "id": "string",
+      "text": "string",
+      "type": "checkbox|text|number|select",
+      "required": "boolean",
+      "options": ["array"] // solo para type: select
+    }
+  ],
+  "category": "string",
+  "createdBy": "string",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+```
+
+### Assignment
+```json
+{
+  "_id": "ObjectId",
+  "checklistId": "ObjectId",
+  "checklistTitle": "string",
+  "collaboratorEmail": "string",
+  "collaboratorName": "string",
+  "title": "string",
+  "description": "string",
+  "dueDate": "Date",
+  "priority": "low|medium|high",
+  "status": "pending|in_progress|completed|reviewed",
+  "assignedBy": "string",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+```
+
+### Execution
+```json
+{
+  "_id": "ObjectId",
+  "assignmentId": "ObjectId",
+  "assignmentTitle": "string",
+  "checklistId": "ObjectId",
+  "collaboratorEmail": "string",
+  "collaboratorName": "string",
+  "responses": [
+    {
+      "itemId": "string",
+      "value": "any",
+      "timestamp": "Date"
+    }
+  ],
+  "notes": "string",
+  "location": {
+    "latitude": "number",
+    "longitude": "number",
+    "address": "string"
+  },
+  "status": "in_progress|completed|reviewed",
+  "startedAt": "Date",
+  "completedAt": "Date",
+  "createdAt": "Date",
+  "updatedAt": "Date"
+}
+```
+
+## Notas técnicas
+
+- Todos los endpoints requieren autenticación JWT mediante header `Authorization: Bearer <token>`
+- Los errores se devuelven en formato JSON con estructura consistente
+- Se implementa validación de permisos (los colaboradores solo pueden ver/editar sus propias asignaciones)
+- Las fechas se manejan en formato ISO 8601
+- Se mantiene trazabilidad de quién crea/modifica cada registro
