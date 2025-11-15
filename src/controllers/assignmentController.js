@@ -2,11 +2,13 @@ import * as assignmentService from "../services/assignmentService.js";
 
 export async function getAllAssignments(req, res) {
     try {
-        const { collaboratorEmail, status } = req.query;
+        const { collaboratorEmail, status, priority, dueDate } = req.query;
         const filters = {};
         
         if (collaboratorEmail) filters.collaboratorEmail = collaboratorEmail;
         if (status) filters.status = status;
+        if (priority) filters.priority = priority;
+        if (dueDate) filters.dueDate = dueDate;
         
         const assignments = await assignmentService.getAllAssignments(filters);
         

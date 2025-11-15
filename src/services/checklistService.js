@@ -1,8 +1,8 @@
 import * as checklistData from "../data/checklistData.js";
 
-export const getAllChecklists = async () => {
+export const getAllChecklists = async (filter = {}) => {
     try {
-        return await checklistData.getAllChecklists();
+        return await checklistData.getAllChecklists(filter);
     } catch (error) {
         throw new Error(`Error al obtener checklists: ${error.message}`);
     }

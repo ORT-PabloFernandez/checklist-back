@@ -16,6 +16,14 @@ export async function getAllAssignments(filters = {}) {
     if (filters.status) {
         query.status = filters.status;
     }
+
+    if (filters.priority) {
+        query.priority = filters.priority;
+    }
+
+    if (filters.dueDate) {
+        query.dueDate = filters.dueDate;
+    }
     
     return await db.collection(COLLECTION_NAME).find(query).toArray();
 }

@@ -2,7 +2,11 @@ import * as checklistService from "../services/checklistService.js";
 
 export async function getAllChecklists(req, res) {
     try {
-        const checklists = await checklistService.getAllChecklists();
+        const {title, category} = req.query;
+        const filter = {};
+        if(title) filter.title = title;
+        if(category) filter.category = category;
+        const checklists = await checklistService.getAllChecklists(filter);
         res.status(200).json({
             success: true,
             data: checklists,
