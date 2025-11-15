@@ -94,8 +94,10 @@ export const updateChecklist = async (id, updateInfo) => {
 export const deleteChecklist = async (id) => {
     try {
         // Verificar que el checklist existe
-        await getChecklistById(id);
-
+        const checklist = await getChecklistById(id);
+        if(!checklist){
+            throw new Error('Checklist no encontrado');
+        }
         return await checklistData.deleteChecklist(id);
     } catch (error) {
         throw error;

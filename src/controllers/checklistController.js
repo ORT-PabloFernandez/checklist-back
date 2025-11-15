@@ -113,3 +113,25 @@ export async function updateChecklist(req, res) {
         });
     }
 }
+
+//
+export async function deleteChecklist(req, res) {
+    try {
+        const { id } = req.params;
+        
+        await checklistService.deleteChecklist(id);
+        
+        res.status(200).json({
+            success: true,
+            message: "Checklist actualizado exitosamente"
+        });
+    } catch (error) {
+        console.error("Error al actualizar checklist:", error);
+        
+        res.status(500).json({
+            success: false,
+            message: "Error interno del servidor",
+            error: error.message
+        });
+    }
+}
