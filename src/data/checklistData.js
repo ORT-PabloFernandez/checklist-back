@@ -6,8 +6,14 @@ const COLLECTION_NAME = "checklists";
 export async function getAllChecklists(filter = {}) {
     const db = getDb();
     const query = {};
-    if(filter.title) query.title = filter.title;
-    if(filter.category) query.category = filter.category;
+    if(filter.title) {
+        query.title = {$regex: new RegExp(filter.title, "i")};
+    }
+
+    if(filter.category) {
+        query.category = {$regex: new RegExp(filter.category, "i")};
+    }
+
     return await db.collection(COLLECTION_NAME).find(query).toArray();
 }
 
