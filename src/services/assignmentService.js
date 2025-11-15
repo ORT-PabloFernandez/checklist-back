@@ -135,8 +135,10 @@ export const getAssignmentsByCollaborator = async (collaboratorEmail) => {
 export const deleteAssignment = async (id) => {
     try {
         // Verificar que la asignación existe
-        await getAssignmentById(id);
-
+        const assaigment = await getAssignmentById(id);
+        if(!assaigment){
+            throw new Error('El assaigmnet a eliminar no fue encontrado');
+        } 
         return await assignmentData.deleteAssignment(id);
     } catch (error) {
         throw error;

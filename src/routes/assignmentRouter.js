@@ -4,9 +4,11 @@ import {
     getAssignmentById, 
     createAssignment, 
     updateAssignment,
-    getMyAssignments 
+    getMyAssignments, 
+    deleteAssignment
 } from "../controllers/assignmentController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
+import { requireSupervisor } from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
@@ -27,5 +29,8 @@ router.post("/", createAssignment);
 
 // PUT /api/assignments/:id - Actualizar una asignación
 router.put("/:id", updateAssignment);
+
+//
+router.delete("/:id", requireSupervisor, deleteAssignment);
 
 export default router;

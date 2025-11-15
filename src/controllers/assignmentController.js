@@ -157,3 +157,24 @@ export async function getMyAssignments(req, res) {
         });
     }
 }
+
+//
+export async function deleteAssignment(req, res) {
+    try {
+        const { id } = req.params;
+        
+        const result = await assignmentService.deleteAssignment(id);
+        
+        res.status(200).json({
+            success: true,
+            message: "Asignación eliminada exitosamente"
+        });
+    } catch (error) {
+        console.error("Error al eliminar asignación:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error interno del servidor",
+            error: error.message
+        });
+    }
+}
