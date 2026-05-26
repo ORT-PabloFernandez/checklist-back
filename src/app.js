@@ -4,7 +4,6 @@ import userRoutes from "./routes/userRoute.js";
 import checklistRoutes from "./routes/checklistRouter.js";
 import assignmentRoutes from "./routes/assignmentRouter.js";
 import executionRoutes from "./routes/executionRouter.js";
-import taskRouter from "./routes/taskRouter.js";
 
 import cors from "cors";
 
@@ -22,7 +21,6 @@ app.use("/api/users", userRoutes);
 app.use("/api/checklists", checklistRoutes);
 app.use("/api/assignments", assignmentRoutes);
 app.use("/api/executions", executionRoutes);
-app.use("/api/tasks", taskRouter);
 
 // Ruta base
 app.get("/", (req, res) => {
@@ -34,7 +32,6 @@ app.get("/", (req, res) => {
             checklists: "/api/checklists", 
             assignments: "/api/assignments",
             executions: "/api/executions",
-            tasks: "/api/tasks"
         }
     });
 });

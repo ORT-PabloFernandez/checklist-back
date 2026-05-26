@@ -40,7 +40,6 @@ npm run dev
 |---------|-----|------|-----------|--------|
 | Users | ✅ | ✅ | — | — |
 | Checklists | ✅ | ✅ | ✅ | — |
-| Tasks | ✅ | ✅ | ✅ | ✅ |
 | Assignments | ✅ | ✅ | ✅ | ✅ |
 | Executions | ✅ | ✅ | ✅ (PATCH) | — |
 
@@ -55,7 +54,6 @@ Mismos permisos que Admin.
 | PUT /api/executions/:id | ✅ Guardar progreso (solo las propias) |
 | POST /api/executions/:id/complete | ✅ Completar ejecución propia |
 | POST/PUT/DELETE checklists | ❌ 403 |
-| POST/PATCH/DELETE tasks | ❌ 403 |
 | POST/DELETE assignments | ❌ 403 |
 | PATCH executions/:id | ❌ 403 |
 
@@ -74,20 +72,14 @@ Mismos permisos que Admin.
 3. **Create Checklist**
 4. **Update Checklist**
 
-### Paso 3 — Tasks (con token Admin/Supervisor)
-1. **Get All Tasks**
-2. **Create Task**
-3. **Update Task** (PATCH con `status`)
-4. **Delete Task**
-
-### Paso 4 — Assignments (con token Admin/Supervisor)
+### Paso 3 — Assignments (con token Admin/Supervisor)
 1. **Get All Assignments**
 2. **Get My Assignments** (cambia a token colaborador)
 3. **Create Assignment** — requiere `checklistId`, `collaboratorEmail`, `title`
 4. **Update Assignment Status**
 5. **Delete Assignment**
 
-### Paso 5 — Executions (flujo completo)
+### Paso 4 — Executions (flujo completo)
 Con token **Colaborador**:
 1. **Create Execution** — body: `{ "assignmentId": "<id>" }`
 2. **Update Execution** — guardar respuestas parciales
@@ -96,7 +88,7 @@ Con token **Colaborador**:
 Con token **Admin/Supervisor**:
 4. **Change Execution Status** (PATCH) — marcar como `reviewed`
 
-### Paso 6 — Pruebas de seguridad
+### Paso 5 — Pruebas de seguridad
 1. **Unauthorized Access** — sin token → 401
 2. **Role-Based Access** — colaborador intentando crear checklist → 403
 3. **Invalid Login** → 401

@@ -9,7 +9,6 @@ API REST desarrollada con Node.js, Express y MongoDB Atlas para la gestión de c
 - 🔐 **Autenticación JWT** - Todos los endpoints están protegidos
 - � **Roles: Admin / Supervisor / Colaborador** - Permisos diferenciados por rol
 - 📋 **Checklists** - Templates reutilizables con ítems configurables
-- � **Tasks** - Tareas simples gestionadas por supervisores
 - 🗂️ **Assignments** - Asignación de checklists a colaboradores
 - ⚡ **Executions** - Ejecución y seguimiento del progreso en tiempo real
 - 🏗️ **Arquitectura en capas** - Routes → Controllers → Services → Data
@@ -68,15 +67,6 @@ Todos requieren header: `Authorization: Bearer <token>`
 | POST | `/api/checklists` | Admin / Supervisor | Crear nuevo template |
 | PUT | `/api/checklists/:id` | Admin / Supervisor | Actualizar template |
 
-### Tasks
-
-| Método | Ruta | Roles | Descripción |
-|--------|------|-------|-------------|
-| GET | `/api/tasks` | Todos | Listar tareas |
-| POST | `/api/tasks` | Admin / Supervisor | Crear tarea |
-| PATCH | `/api/tasks/:id` | Admin / Supervisor | Actualizar tarea |
-| DELETE | `/api/tasks/:id` | Admin / Supervisor | Eliminar tarea |
-
 ### Assignments
 
 | Método | Ruta | Roles | Descripción |
@@ -119,23 +109,17 @@ El admin tiene acceso total al sistema.
    POST /api/checklists           → crear nuevo template
    PUT  /api/checklists/:id       → modificar template existente
 
-3. Gestión de tasks
-   GET    /api/tasks              → ver todas las tareas
-   POST   /api/tasks              → crear tarea
-   PATCH  /api/tasks/:id          → actualizar estado de tarea
-   DELETE /api/tasks/:id          → eliminar tarea
-
-4. Gestión de asignaciones
+3. Gestión de asignaciones
    GET    /api/assignments        → ver todas (filtrables)
    POST   /api/assignments        → asignar checklist a colaborador
    PUT    /api/assignments/:id    → cambiar estado (pending → reviewed)
    DELETE /api/assignments/:id    → eliminar asignación
 
-5. Supervisión de ejecuciones
+4. Supervisión de ejecuciones
    GET   /api/executions          → ver todas las ejecuciones
    PATCH /api/executions/:id      → marcar ejecución como "reviewed"
 
-6. Gestión de usuarios
+5. Gestión de usuarios
    GET /api/users                 → listar usuarios
    GET /api/users/:id             → ver perfil de usuario
 ```
@@ -154,13 +138,7 @@ El supervisor gestiona el trabajo pero no ejecuta checklists.
    POST /api/checklists           → crear nuevo template
    PUT  /api/checklists/:id       → modificar template
 
-3. Gestión de tasks
-   GET    /api/tasks              → ver tareas
-   POST   /api/tasks              → crear tarea
-   PATCH  /api/tasks/:id          → actualizar tarea
-   DELETE /api/tasks/:id          → eliminar tarea
-
-4. Gestión de asignaciones
+3. Gestión de asignaciones
    GET    /api/assignments        → ver todas las asignaciones
    POST   /api/assignments        → asignar checklist a colaborador
      Body requerido:
@@ -176,7 +154,7 @@ El supervisor gestiona el trabajo pero no ejecuta checklists.
      Body: { "status": "pending|in_progress|completed|reviewed" }
    DELETE /api/assignments/:id    → eliminar asignación
 
-5. Revisión de ejecuciones
+4. Revisión de ejecuciones
    GET   /api/executions                               → ver todas
    GET   /api/executions?collaboratorEmail=x@x.com    → filtrar
    PATCH /api/executions/:id    → cambiar estado
@@ -232,7 +210,6 @@ El colaborador solo puede ejecutar las asignaciones que le corresponden.
 
 ❌ Acciones NO permitidas al colaborador:
    - POST/PUT/DELETE /api/checklists     → 403
-   - POST/PATCH/DELETE /api/tasks        → 403
    - POST/DELETE /api/assignments        → 403
    - PUT /api/executions de otro usuario → 403
    - PATCH /api/executions/:id           → 403
@@ -258,19 +235,6 @@ El colaborador solo puede ejecutar las asignaciones que le corresponden.
       "options": ["array"]
     }
   ],
-  "createdAt": "Date",
-  "updatedAt": "Date"
-}
-```
-
-### Task
-```json
-{
-  "_id": "ObjectId",
-  "title": "string",
-  "description": "string",
-  "status": "pending | in_progress | completed",
-  "assignee": "string (email)",
   "createdAt": "Date",
   "updatedAt": "Date"
 }
