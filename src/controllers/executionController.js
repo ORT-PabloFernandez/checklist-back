@@ -110,7 +110,9 @@ export async function updateExecution(req, res) {
         
         // Errores de validación y permisos
         if (error.message.includes("no encontrada") || error.message.includes("permisos") ||
-            error.message.includes("completada") || error.message.includes("debe")) {
+            error.message.includes("completada") || error.message.includes("debe") ||
+            error.message.includes("valido") || error.message.includes("requerido") ||
+            error.message.includes("Faltan")) {
             const statusCode = error.message.includes("permisos") ? 403 : 400;
             return res.status(statusCode).json({
                 success: false,
@@ -178,7 +180,9 @@ export async function changeStatusExecution(req, res) {
         
         // Errores de validación y permisos
         if (error.message.includes("no encontrada") || error.message.includes("permisos") ||
-            error.message.includes("completada") || error.message.includes("debe")) {
+            error.message.includes("completada") || error.message.includes("debe") ||
+            error.message.includes("valido") || error.message.includes("requerido") ||
+            error.message.includes("Faltan")) {
             const statusCode = error.message.includes("permisos") ? 403 : 400;
             return res.status(statusCode).json({
                 success: false,

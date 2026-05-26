@@ -38,7 +38,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:3000",
+			"value": "http://localhost:5000",
 			"type": "string"
 		},
 		{
@@ -214,8 +214,6 @@
 						"description": "Registrar un nuevo usuario (rol colaborador por defecto)"
 					}
 				}
-
-				
 			],
 			"description": "Endpoints de autenticación y registro"
 		},
@@ -536,7 +534,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"checklistId\": \"CHECKLIST_ID_HERE\",\n    \"collaboratorEmail\": \"Diego.Siciliani@ejemplo.com\",\n    \"dueDate\": \"2024-12-01T10:00:00.000Z\",\n    \"priority\": \"high\",\n    \"notes\": \"Asignación creada desde Postman para pruebas\",\n    \"checklistSlug\": \"inspeccion-de-seguridad\",\n    \"title\": \"Inspección de seguridad en área de pozo\",\n   \"collaboratorName\": \"Diego Siciliani\"\n }"
+							"raw": "{\n    \"checklistId\": \"CHECKLIST_ID_HERE\",\n    \"collaboratorEmail\": \"Diego.Siciliani@ejemplo.com\",\n    \"collaboratorName\": \"Diego Siciliani\",\n    \"title\": \"Inspeccion de seguridad en area de pozo\",\n    \"description\": \"Asignacion creada desde Postman\",\n    \"priority\": \"high\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/assignments",
@@ -548,7 +546,103 @@
 								"assignments"
 							]
 						},
-						"description": "Crear una nueva asignación"
+						"description": "Crear asignacion. dueDate es opcional (omitir si no se usa)."
+					}
+				},
+				{
+					"name": "Get My Assignments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assignments/my",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assignments",
+								"my"
+							]
+						},
+						"description": "Asignaciones del usuario logueado (usar token colaborador)"
+					}
+				},
+				{
+					"name": "Update Assignment Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"reviewed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/assignments/ASSIGNMENT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assignments",
+								"ASSIGNMENT_ID_HERE"
+							]
+						},
+						"description": "Cambiar estado: pending | in_progress | completed | reviewed"
+					}
+				},
+				{
+					"name": "Delete Assignment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/assignments/ASSIGNMENT_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"assignments",
+								"ASSIGNMENT_ID_HERE"
+							]
+						},
+						"description": "Eliminar asignacion (Admin/Supervisor)"
 					}
 				}
 			],
@@ -670,7 +764,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"assignmentId\": \"ASSIGNMENT_ID_HERE\",\n    \"checklistTitle\": \"Inspección de seguridad en área de pozo\",\n    \"responses\": {\n        \"1\": {\n            \"value\": \"Correcta\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:00:00.000Z\"\n        },\n        \"2\": {\n            \"value\": \"Cumple\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:01:00.000Z\"\n        }\n    }\n}"
+							"raw": "{\n    \"assignmentId\": \"ASSIGNMENT_ID_HERE\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/executions",
@@ -682,7 +776,7 @@
 								"executions"
 							]
 						},
-						"description": "Crear una nueva ejecución (iniciar checklist)"
+						"description": "Iniciar ejecucion. Solo requiere assignmentId."
 					}
 				},
 				{
@@ -707,7 +801,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"responses\": {\n        \"1\": {\n            \"value\": \"Correcta\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:00:00.000Z\"\n        },\n        \"2\": {\n            \"value\": \"Cumple\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:01:00.000Z\"\n        },\n        \"4\": {\n            \"value\": \"Seguro\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:02:00.000Z\"\n        }\n    }\n}"
+							"raw": "{\n    \"responses\": [\n        {\n            \"itemId\": \"1\",\n            \"value\": \"Correcta\"\n        },\n        {\n            \"itemId\": \"2\",\n            \"value\": 1250\n        },\n        {\n            \"itemId\": \"3\",\n            \"value\": \"Sin fugas\"\n        }\n    ],\n    \"notes\": \"Progreso guardado\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/executions/EXECUTION_ID_HERE",
@@ -720,7 +814,7 @@
 								"EXECUTION_ID_HERE"
 							]
 						},
-						"description": "Actualizar una ejecución (guardar progreso)"
+						"description": "Guardar progreso. responses es array [{itemId, value}]."
 					}
 				},
 				{
@@ -745,7 +839,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"responses\": {\n        \"1\": {\n            \"value\": \"Correcta\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:00:00.000Z\"\n        },\n        \"2\": {\n            \"value\": \"Cumple\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:01:00.000Z\"\n        },\n        \"4\": {\n            \"value\": \"Seguro\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:02:00.000Z\"\n        },\n        \"5\": {\n            \"value\": \"2024-10-15\",\n            \"valid\": true,\n            \"visible\": true,\n            \"completedAt\": \"2024-11-04T02:03:00.000Z\"\n        }\n    },\n    \"completionNotes\": \"Inspección completada sin anomalías detectadas\"\n}"
+							"raw": "{\n    \"responses\": [\n        {\n            \"itemId\": \"1\",\n            \"value\": \"Correcta\"\n        },\n        {\n            \"itemId\": \"2\",\n            \"value\": 1250\n        },\n        {\n            \"itemId\": \"3\",\n            \"value\": \"Sin fugas\"\n        },\n        {\n            \"itemId\": \"4\",\n            \"value\": \"Abiertas\"\n        }\n    ],\n    \"notes\": \"Inspeccion completada sin anomalias detectadas\"\n}"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/executions/EXECUTION_ID_HERE/complete",
@@ -759,11 +853,187 @@
 								"complete"
 							]
 						},
-						"description": "Completar una ejecución (finalizar checklist)"
+						"description": "Completar ejecucion. responses es array [{itemId, value}]."
+					}
+				},
+				{
+					"name": "Change Execution Status (Admin/Supervisor)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"reviewed\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/executions/EXECUTION_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"executions",
+								"EXECUTION_ID_HERE"
+							]
+						},
+						"description": "Marcar ejecucion como reviewed (solo Admin/Supervisor)"
 					}
 				}
 			],
 			"description": "Gestión de ejecuciones de checklists"
+		},
+		{
+			"name": "📝 Tasks",
+			"description": "Gestion de tareas simples",
+			"item": [
+				{
+					"name": "Get All Tasks",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						},
+						"description": "Listar tareas (todos los roles)"
+					}
+				},
+				{
+					"name": "Create Task (Supervisor Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Revisar equipo sector A\",\n    \"description\": \"Inspeccion de rutina\",\n    \"status\": \"pending\",\n    \"assignee\": \"Nestor.Wilke@ejemplo.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks"
+							]
+						},
+						"description": "Crear tarea (Admin/Supervisor). title es requerido."
+					}
+				},
+				{
+					"name": "Update Task (Supervisor Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"in_progress\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/tasks/TASK_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"TASK_ID_HERE"
+							]
+						},
+						"description": "Actualizar tarea (Admin/Supervisor). Al menos un campo requerido."
+					}
+				},
+				{
+					"name": "Delete Task (Supervisor Only)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/tasks/TASK_ID_HERE",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"tasks",
+								"TASK_ID_HERE"
+							]
+						},
+						"description": "Eliminar tarea (Admin/Supervisor)"
+					}
+				}
+			]
 		},
 		{
 			"name": "🧪 Test Scenarios",

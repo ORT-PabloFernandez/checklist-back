@@ -47,7 +47,7 @@ export async function deleteTask(req, res) {
         return res.status(200).json({ success: true, message: "Tarea eliminada correctamente" });
     } catch (error) {
         console.error("Error al eliminar tarea:", error);
-        if (error.message === "Task no encontrada") {
+        if (error.message === "Tarea no encontrada") {
             return res.status(404).json({ success: false, message: error.message });
         }
         return res.status(500).json({ success: false, message: "Error interno del servidor", error: error.message });

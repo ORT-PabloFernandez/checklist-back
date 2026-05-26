@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import * as executionData from "../data/executionData.js";
 import * as assignmentData from "../data/assignmentData.js";
 
@@ -54,13 +55,9 @@ export const createExecution = async (executionInfo, collaboratorEmail, collabor
 
         const executionData_new = {
             assignmentId: executionInfo.assignmentId,
-            assignmentTitle: assignment.title,
-            checklistId: assignment.checklistId,
+            checklistTitle: assignment.checklistTitle,
             collaboratorEmail: collaboratorEmail,
-            collaboratorName: collaboratorName || collaboratorEmail,
-            responses: [],
-            notes: "",
-            location: null
+            responses: {}
         };
 
         const result = await executionData.createExecution(executionData_new);
@@ -90,18 +87,23 @@ export const updateExecution = async (id, updateInfo, collaboratorEmail) => {
         // Remover campos que no se deben actualizar
         const { _id, createdAt, startedAt, collaboratorEmail: _, assignmentId, ...updateData } = updateInfo;
 
-        // Validar responses si se están actualizando
+        // Validar y convertir responses si se están actualizando
         if (updateData.responses) {
             if (!Array.isArray(updateData.responses)) {
                 throw new Error("Responses debe ser un array");
             }
-
             // Validar estructura de responses
             for (const response of updateData.responses) {
                 if (!response.itemId || response.value === undefined) {
                     throw new Error("Cada respuesta debe tener itemId y value");
                 }
             }
+            // Convertir array [{itemId, value}] a mapa {itemId: {value, ...}} para el schema de Atlas
+            const responsesMap = {};
+            for (const r of updateData.responses) {
+                responsesMap[r.itemId] = { value: r.value, updatedAt: new Date() };
+            }
+            updateData.responses = responsesMap;
         }
 
         // Validar location si se está actualizando
@@ -148,12 +150,20 @@ export const completeExecution = async (id, completionInfo, collaboratorEmail) =
             }
         }
 
+        // Convertir array [{itemId, value}] a mapa para el schema de Atlas
+        const responsesMap = {};
+        for (const r of completionInfo.responses) {
+            responsesMap[r.itemId] = { value: r.value, valid: true, visible: true, completedAt: new Date() };
+        }
+
         const completionData = {
-            responses: completionInfo.responses,
-            notes: completionInfo.notes || execution.notes || "",
-            location: completionInfo.location || execution.location,
+            responses: responsesMap,
             status: "completed"
         };
+        const resolvedNotes = completionInfo.notes || execution.notes || "";
+        if (resolvedNotes) completionData.notes = resolvedNotes;
+        const resolvedLocation = completionInfo.location || execution.location;
+        if (resolvedLocation) completionData.location = resolvedLocation;
 
         const result = await executionData.completeExecution(id, completionData);
 

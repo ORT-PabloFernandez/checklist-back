@@ -1,170 +1,194 @@
 # Colección Postman - Checklist Backend API
 
-Esta colección de Postman contiene todas las pruebas necesarias para validar el funcionamiento completo del backend del sistema de checklists.
+Colección completa para probar el backend del sistema de checklists.
 
-## 📁 Archivos Incluidos
+## 📁 Archivos incluidos
 
-- **`Checklist-Backend.postman_collection.json`** - Colección principal con todos los endpoints
-- **`Checklist-Backend.postman_environment.json`** - Variables de entorno
-- **`README.md`** - Este archivo con instrucciones
+- `Checklist-Backend.postman_collection.json` — Colección con todos los endpoints
+- `Checklist-Backend.postman_environment.json` — Variables de entorno
+- `README.md` — Este archivo
 
-## 🚀 Configuración Inicial
+## 🚀 Configuración inicial
 
-### 1. Importar en Postman
-
-1. Abrir Postman
-2. Hacer clic en **Import**
-3. Seleccionar ambos archivos JSON:
-   - `Checklist-Backend.postman_collection.json`
-   - `Checklist-Backend.postman_environment.json`
-4. Seleccionar el environment **"Checklist Backend Environment"**
-
-### 2. Verificar Variables de Entorno
-
-Asegúrate de que las siguientes variables estén configuradas:
-
-- `base_url`: `http://localhost:3000`
-- `admin_email`: `admin@checklist.com`
-- `supervisor_email`: `supervisor@ort.edu.ar`
-- `collaborator_email`: `Nestor.Wilke@ejemplo.com`
-
-### 3. Iniciar el Servidor Backend
+1. Abrir Postman → **Import** → seleccionar ambos archivos JSON
+2. Seleccionar el environment **"Checklist Backend Environment"**
+3. Iniciar el servidor:
 
 ```bash
-cd /home/dev/code/2025/c2/proyectos/checklist/checklist-back
 npm run dev
 ```
 
-## 🧪 Flujo de Pruebas Recomendado
+> El servidor corre en **http://localhost:5000**
 
-### Paso 1: Autenticación
-1. **Login Admin** - Obtiene token JWT con permisos completos
-2. **Login Supervisor** - Obtiene token con permisos de supervisión
-3. **Login Colaborador** - Obtiene token con permisos básicos
+### Variables de entorno
 
-### Paso 2: Gestión de Usuarios
-1. **Get All Users** - Ver todos los usuarios del sistema
-2. **Register New User** - Crear un nuevo usuario
-3. **Get User by ID** - Obtener usuario específico
+| Variable | Valor |
+|----------|-------|
+| `base_url` | `http://localhost:5000` |
+| `admin_email` | `admin@checklist.com` |
+| `admin_password` | `admin123` |
+| `supervisor_email` | `supervisor@ort.edu.ar` |
+| `collaborator_email` | `Nestor.Wilke@ejemplo.com` |
+| `collaborator_password` | `pass123` |
 
-### Paso 3: Gestión de Checklists
-1. **Get All Checklists** - Ver checklists disponibles (Oil & Gas)
-2. **Get Checklist by ID** - Ver detalles de un checklist específico
-3. **Create Checklist** - Crear nuevo checklist (solo supervisores)
-4. **Update Checklist** - Actualizar checklist existente
+---
 
-### Paso 4: Gestión de Asignaciones
-1. **Get All Assignments** - Ver todas las asignaciones
-2. **Get Assignments by Collaborator** - Filtrar por colaborador
-3. **Create Assignment** - Asignar checklist a colaborador
-4. **Update Assignment** - Cambiar estado o detalles
+## 🔐 Roles y permisos
 
-### Paso 5: Gestión de Ejecuciones
-1. **Get All Executions** - Ver todas las ejecuciones
-2. **Create Execution** - Iniciar ejecución de checklist
-3. **Update Execution** - Guardar progreso
-4. **Complete Execution** - Finalizar checklist
-
-### Paso 6: Pruebas de Seguridad
-1. **Test Unauthorized Access** - Acceso sin token
-2. **Test Role-Based Access** - Control de permisos por rol
-3. **Test Invalid Login** - Credenciales incorrectas
-
-## 🔐 Roles y Permisos
-
-### Admin (`admin@checklist.com`)
-- ✅ Acceso completo a todos los endpoints
-- ✅ Crear, editar, eliminar checklists
-- ✅ Gestionar usuarios y asignaciones
+### Admin (`admin@checklist.com` / `admin123`)
+| Recurso | GET | POST | PUT/PATCH | DELETE |
+|---------|-----|------|-----------|--------|
+| Users | ✅ | ✅ | — | — |
+| Checklists | ✅ | ✅ | ✅ | — |
+| Tasks | ✅ | ✅ | ✅ | ✅ |
+| Assignments | ✅ | ✅ | ✅ | ✅ |
+| Executions | ✅ | ✅ | ✅ (PATCH) | — |
 
 ### Supervisor (`supervisor@ort.edu.ar`)
-- ✅ Crear y editar checklists
-- ✅ Crear y gestionar asignaciones
-- ✅ Ver todas las ejecuciones
-- ❌ Gestión avanzada de usuarios
+Mismos permisos que Admin.
 
-### Colaborador (`Nestor.Wilke@ejemplo.com`)
-- ✅ Ver checklists asignados
-- ✅ Ejecutar checklists
-- ✅ Ver sus propias ejecuciones
-- ❌ Crear checklists
-- ❌ Crear asignaciones
+### Colaborador (`Nestor.Wilke@ejemplo.com` / `pass123`)
+| Recurso | Permitido |
+|---------|-----------|
+| GET /api/assignments/my | ✅ Ver sus asignaciones |
+| POST /api/executions | ✅ Iniciar ejecución propia |
+| PUT /api/executions/:id | ✅ Guardar progreso (solo las propias) |
+| POST /api/executions/:id/complete | ✅ Completar ejecución propia |
+| POST/PUT/DELETE checklists | ❌ 403 |
+| POST/PATCH/DELETE tasks | ❌ 403 |
+| POST/DELETE assignments | ❌ 403 |
+| PATCH executions/:id | ❌ 403 |
 
-## 📋 Datos de Prueba Disponibles
+---
 
-### Usuarios Reales (del Frontend)
-- **Nestor Wilke**: `Nestor.Wilke@ejemplo.com` / `pass123`
-- **Adele Vance**: `Adele.Vance@ejemplo.com` / `pass123`
-- **Alex Wilber**: `Alex.Wilber@ejemplo.com` / `pass123`
-- **Diego Siciliani**: `Diego.Siciliani@ejemplo.com` / `pass123`
+## 🧪 Flujo de pruebas recomendado
 
-### Checklists Oil & Gas
-1. **Inspección diaria de pozo en operación**
-   - Medición de presión (PSI)
-   - Tasa de producción (barriles/día)
-   - Verificación de fugas
-   - Estado de válvulas
+### Paso 1 — Autenticación
+1. **Login Admin** → guarda `jwt_token` automáticamente
+2. **Login Supervisor** → guarda `jwt_token`
+3. **Login Colaborador** → guarda `jwt_token`
 
-2. **Inspección de seguridad en área de pozo**
-   - Señalización del área
-   - Uso de EPP
-   - Estado de tableros eléctricos
-   - Calibración de detectores
+### Paso 2 — Checklists (con token Admin/Supervisor)
+1. **Get All Checklists** → copiar un `_id` para usarlo después
+2. **Get Checklist by ID**
+3. **Create Checklist**
+4. **Update Checklist**
 
-3. **Mantenimiento preventivo ESP**
-   - Medición de voltaje
-   - Inspección de cables
-   - Estado del fluido dieléctrico
-   - Anomalías detectadas
+### Paso 3 — Tasks (con token Admin/Supervisor)
+1. **Get All Tasks**
+2. **Create Task**
+3. **Update Task** (PATCH con `status`)
+4. **Delete Task**
 
-### Asignaciones Existentes
-- 4 asignaciones con diferentes estados:
-  - 2 pendientes (Nestor)
-  - 1 en progreso (Adele)
-  - 1 completada (Alex)
+### Paso 4 — Assignments (con token Admin/Supervisor)
+1. **Get All Assignments**
+2. **Get My Assignments** (cambia a token colaborador)
+3. **Create Assignment** — requiere `checklistId`, `collaboratorEmail`, `title`
+4. **Update Assignment Status**
+5. **Delete Assignment**
 
-## 🔧 Obtener IDs para Pruebas
+### Paso 5 — Executions (flujo completo)
+Con token **Colaborador**:
+1. **Create Execution** — body: `{ "assignmentId": "<id>" }`
+2. **Update Execution** — guardar respuestas parciales
+3. **Complete Execution** — enviar todas las respuestas
 
-Para obtener los IDs reales de los documentos:
+Con token **Admin/Supervisor**:
+4. **Change Execution Status** (PATCH) — marcar como `reviewed`
 
-1. Ejecutar **Get All Checklists** y copiar un `_id`
-2. Ejecutar **Get All Assignments** y copiar un `_id`
-3. Ejecutar **Get All Executions** y copiar un `_id`
-4. Reemplazar `CHECKLIST_ID_HERE`, `ASSIGNMENT_ID_HERE`, etc. en las URLs
+### Paso 6 — Pruebas de seguridad
+1. **Unauthorized Access** — sin token → 401
+2. **Role-Based Access** — colaborador intentando crear checklist → 403
+3. **Invalid Login** → 401
 
-## ⚠️ Notas Importantes
+---
 
-1. **Autenticación Automática**: Los requests de login guardan automáticamente el JWT token
-2. **Variables Dinámicas**: Usa las variables de entorno para evitar hardcodear valores
-3. **Orden de Ejecución**: Algunos requests dependen de otros (ej: crear antes de actualizar)
-4. **Validación de Roles**: Prueba diferentes usuarios para validar permisos
-5. **Datos Realistas**: Los ejemplos usan datos del sector Oil & Gas
+## � Bodies de referencia
 
-## 🐛 Solución de Problemas
+### Create Assignment
+```json
+{
+  "checklistId": "CHECKLIST_ID_HERE",
+  "collaboratorEmail": "Nestor.Wilke@ejemplo.com",
+  "collaboratorName": "Nestor Wilke",
+  "title": "Inspección semanal",
+  "description": "Descripción opcional",
+  "priority": "high"
+}
+```
 
-### Error 401 (Unauthorized)
-- Verificar que el token JWT esté configurado
-- Ejecutar login nuevamente
+> `dueDate` es opcional. Si se omite, no se almacena (requerido por schema de Atlas).
 
-### Error 403 (Forbidden)
-- Verificar que el usuario tenga los permisos necesarios
-- Usar supervisor/admin para operaciones restringidas
+### Create Execution
+```json
+{
+  "assignmentId": "ASSIGNMENT_ID_HERE"
+}
+```
 
-### Error 404 (Not Found)
-- Verificar que los IDs en las URLs sean válidos
-- Obtener IDs actuales con los endpoints GET
+### Update Execution (guardar progreso)
+```json
+{
+  "responses": [
+    { "itemId": "1", "value": "Correcta" },
+    { "itemId": "2", "value": 1250 }
+  ],
+  "notes": "Revisión parcial completada"
+}
+```
 
-### Error 500 (Server Error)
-- Verificar que el servidor esté ejecutándose
-- Revisar logs del servidor para detalles
+### Complete Execution
+```json
+{
+  "responses": [
+    { "itemId": "1", "value": "Correcta" },
+    { "itemId": "2", "value": 1250 },
+    { "itemId": "3", "value": "Sin fugas" },
+    { "itemId": "4", "value": "Abiertas" }
+  ],
+  "notes": "Inspección completada sin anomalías"
+}
+```
 
-## 📊 Métricas de Prueba
+### Change Execution Status (Admin/Supervisor)
+```json
+{ "status": "reviewed" }
+```
 
-La colección incluye tests automáticos que verifican:
-- ✅ Códigos de respuesta HTTP correctos
-- ✅ Estructura de respuestas JSON
-- ✅ Autenticación y autorización
-- ✅ Validación de datos de entrada
-- ✅ Manejo de errores
+---
 
-¡Listo para probar el backend completo! 🚀
+## 🔧 Obtener IDs para pruebas
+
+1. Ejecutar **Get All Checklists** → copiar un `_id`
+2. Ejecutar **Create Assignment** con ese `checklistId`
+3. Copiar el `id` de la respuesta → usar en **Create Execution**
+4. Copiar el `id` de la ejecución → usar en Update/Complete/PATCH
+
+---
+
+## 🐛 Solución de problemas
+
+| Error | Causa | Solución |
+|-------|-------|----------|
+| 401 | Token ausente o expirado | Ejecutar login de nuevo |
+| 403 | Rol sin permisos | Usar Admin/Supervisor para esa operación |
+| 400 | Datos inválidos o regla de negocio | Revisar el mensaje de error en la respuesta |
+| 404 | ID no existe | Obtener IDs frescos con los GETs |
+| 500 | Error del servidor | Revisar logs del servidor (`npm run dev`) |
+
+---
+
+## 📊 Datos de prueba disponibles
+
+### Colaboradores
+| Email | Password | Nombre |
+|-------|----------|--------|
+| `Nestor.Wilke@ejemplo.com` | `pass123` | Nestor Wilke |
+| `Adele.Vance@ejemplo.com` | `pass123` | Adele Vance |
+| `Alex.Wilber@ejemplo.com` | `pass123` | Alex Wilber |
+| `Diego.Siciliani@ejemplo.com` | `pass123` | Diego Siciliani |
+
+### Checklists Oil & Gas pre-cargados
+- Inspección diaria de pozo en operación
+- Inspección de seguridad en área de pozo
+- Mantenimiento preventivo de bomba ESP

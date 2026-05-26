@@ -77,17 +77,17 @@ if (!checklist) {
             collaboratorName: assignmentInfo.collaboratorName || assignmentInfo.collaboratorEmail,
             title: assignmentInfo.title,
             description: assignmentInfo.description || "",
-            dueDate: assignmentInfo.dueDate ? new Date(assignmentInfo.dueDate) : null,
+            ...(assignmentInfo.dueDate ? { dueDate: new Date(assignmentInfo.dueDate) } : {}),
             priority: assignmentInfo.priority || "medium",
             assignedBy: String(assignedBy)
         };
 
         const result = await assignmentData.createAssignment(assignmentData_new);
         await userData.createNotification(notificarA._id, {
-            assignmentTitle: assignmentInfo.title,
+            assigmentTitle: assignmentInfo.title,
             checklist: checklist.title,
-            assignmentDescription: assignmentInfo.description || "",
-            assignmentBy: assignedBy,
+            assigmentDescription: assignmentInfo.description || "",
+            assigmentBy: assignedBy,
         });
         return result;
     } catch (error) {

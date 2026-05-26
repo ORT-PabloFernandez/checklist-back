@@ -96,8 +96,8 @@ export async function createAssignment(req, res) {
         
         // Errores de validación y de negocio
         if (error.message.includes("requeridos") || error.message.includes("inválido") || 
-            error.message.includes("no encontrado") || error.message.includes("debe") ||
-            error.message.includes("formato")) {
+            error.message.includes("no encontrado") || error.message.includes("No se encontró") ||
+            error.message.includes("debe") || error.message.includes("formato")) {
             return res.status(400).json({
                 success: false,
                 message: error.message
@@ -132,6 +132,13 @@ export async function updateAssignment(req, res) {
         });
     } catch (error) {
         console.error("Error al actualizar asignación:", error);
+        if (error.message.includes("inválido") || error.message.includes("inválida") ||
+            error.message.includes("no encontrada") || error.message.includes("debe")) {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            });
+        }
         res.status(500).json({
             success: false,
             message: "Error interno del servidor",
