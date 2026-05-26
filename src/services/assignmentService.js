@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import * as assignmentData from "../data/assignmentData.js";
 import * as checklistData from "../data/checklistData.js";
 import * as userData from "../data/userData.js";
@@ -18,7 +19,7 @@ export const getAssignmentById = async (id) => {
         }
         return assignment;
     } catch (error) {
-        throw error;
+        throw error;   
     }
 };
 
@@ -36,18 +37,21 @@ export const createAssignment = async (assignmentInfo, assignedBy) => {
         }
 
         // Verificar que el checklist existe
-        const users = await userData.findAllUsers();
-        const collaborator = users.filter((collaborator) => {
-            return collaborator.email === assignmentInfo.collaboratorEmail && collaborator.username === assignmentInfo.collaboratorName;
-        });
-        if(collaborator.length !== 1){
-            throw new Error('Más de un colaborador con el mismo email y nombre o no se encontro colaborador');
-        }
-        const notificarA = collaborator[0];
-        const checklist = await checklistData.getChecklistById(assignmentInfo.checklistId);
-        if (!checklist) {
-            throw new Error("Checklist no encontrado");
-        }
+     const users = await userData.findAllUsers();
+const collaborator = users.find(
+  (u) => u.email === assignmentInfo.collaboratorEmail &&
+         (!assignmentInfo.collaboratorName || u.username === assignmentInfo.collaboratorName)
+);
+
+if (!collaborator) {
+  throw new Error("No se encontró colaborador con ese email/nombre");
+}
+
+const notificarA = collaborator;
+const checklist = await checklistData.getChecklistById(assignmentInfo.checklistId);
+if (!checklist) {
+  throw new Error("Checklist no encontrado");
+}
 
         // Validar fecha de vencimiento si se proporciona
         if (assignmentInfo.dueDate) {
@@ -67,7 +71,7 @@ export const createAssignment = async (assignmentInfo, assignedBy) => {
         }
 
         const assignmentData_new = {
-            checklistId: assignmentInfo.checklistId,
+            checklistId: new ObjectId(assignmentInfo.checklistId),
             checklistTitle: checklist.title,
             collaboratorEmail: assignmentInfo.collaboratorEmail,
             collaboratorName: assignmentInfo.collaboratorName || assignmentInfo.collaboratorEmail,
@@ -75,15 +79,15 @@ export const createAssignment = async (assignmentInfo, assignedBy) => {
             description: assignmentInfo.description || "",
             dueDate: assignmentInfo.dueDate ? new Date(assignmentInfo.dueDate) : null,
             priority: assignmentInfo.priority || "medium",
-            assignedBy: assignedBy
+            assignedBy: String(assignedBy)
         };
 
         const result = await assignmentData.createAssignment(assignmentData_new);
         await userData.createNotification(notificarA._id, {
-            assigmentTitle: assignmentInfo.title,
+            assignmentTitle: assignmentInfo.title,
             checklist: checklist.title,
-            assigmentDescription: assignmentInfo.description || "",
-            assigmentBy: assignedBy,
+            assignmentDescription: assignmentInfo.description || "",
+            assignmentBy: assignedBy,
         });
         return result;
     } catch (error) {

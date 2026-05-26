@@ -24,6 +24,7 @@ export const loginUserController = async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: "2h" }
         );
+        //devuelve contrasenia dejar preguntar si es necesario (esta mal que la devuelva)
         res.json({ message: "Login exitoso", user, token });
     } catch (error) {
         if (error.message === "Credenciales inválidas") {

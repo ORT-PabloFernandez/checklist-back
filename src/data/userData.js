@@ -1,7 +1,7 @@
 import { getDb } from "./connection.js";
 import { ObjectId, UUID } from "mongodb";
 import bcrypt from "bcrypt";
-
+import crypto from "crypto";
 export async function findAllUsers() {
     const db = getDb();
     const users = await db.collection("users").find().toArray();
@@ -90,7 +90,7 @@ export async function createNotification (id, data) {
 
 export async function deleteNotifications (ids, id) {
     const db = getDb();
-    const result = await collection.updateOne(
+    const result = await db.collection("users").updateOne(
         { _id: new ObjectId(id) },
         {
             $pull: {

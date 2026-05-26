@@ -214,6 +214,8 @@
 						"description": "Registrar un nuevo usuario (rol colaborador por defecto)"
 					}
 				}
+
+				
 			],
 			"description": "Endpoints de autenticación y registro"
 		},
@@ -534,7 +536,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"checklistId\": \"CHECKLIST_ID_HERE\",\n    \"collaboratorEmail\": \"Diego.Siciliani@ejemplo.com\",\n    \"dueDate\": \"2024-12-01T10:00:00.000Z\",\n    \"priority\": \"high\",\n    \"notes\": \"Asignación creada desde Postman para pruebas\",\n    \"checklistSlug\": \"inspeccion-de-seguridad\",\n    \"checklistTitle\": \"Inspección de seguridad en área de pozo\"\n}"
+							"raw": "{\n    \"checklistId\": \"CHECKLIST_ID_HERE\",\n    \"collaboratorEmail\": \"Diego.Siciliani@ejemplo.com\",\n    \"dueDate\": \"2024-12-01T10:00:00.000Z\",\n    \"priority\": \"high\",\n    \"notes\": \"Asignación creada desde Postman para pruebas\",\n    \"checklistSlug\": \"inspeccion-de-seguridad\",\n    \"title\": \"Inspección de seguridad en área de pozo\",\n   \"collaboratorName\": \"Diego Siciliani\"\n }"
 						},
 						"url": {
 							"raw": "{{base_url}}/api/assignments",
@@ -547,44 +549,6 @@
 							]
 						},
 						"description": "Crear una nueva asignación"
-					}
-				},
-				{
-					"name": "Update Assignment",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"status\": \"in_progress\",\n    \"notes\": \"Asignación actualizada - en progreso\",\n    \"priority\": \"medium\"\n}"
-						},
-						"url": {
-							"raw": "{{base_url}}/api/assignments/ASSIGNMENT_ID_HERE",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"api",
-								"assignments",
-								"ASSIGNMENT_ID_HERE"
-							]
-						},
-						"description": "Actualizar una asignación existente"
 					}
 				}
 			],
